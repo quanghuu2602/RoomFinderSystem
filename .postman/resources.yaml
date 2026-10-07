@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: 605a1a61-68cd-4e76-827e-07933b3357d7
+
+localResources:
+  specs:
+    - ../RoomFinder.API/obj/Debug/net7.0/EndpointInfo/RoomFinder.API.json

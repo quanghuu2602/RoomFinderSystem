@@ -4,7 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using RoomFinder.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using System.Text;
+
 
 namespace RoomFinder.API.Controllers;
 
@@ -67,5 +69,13 @@ public class AuthController : ControllerBase
             signingCredentials: creds);
 
         return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+    }
+    [HttpGet("me")]
+    [Authorize]
+    public IActionResult Me()
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var role = User.FindFirstValue(ClaimTypes.Role);
+        return Ok(new { email, role });
     }
 }

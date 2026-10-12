@@ -4,3 +4,4 @@ obj/
 *.user
 node_modules/
 .env
+RoomFinder.API/wwwroot/uploads/

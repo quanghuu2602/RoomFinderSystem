@@ -1,0 +1,16 @@
+/* CSS riêng của pages/rooms/room-list.html. */
+.topbar {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#userInfo {
+  overflow-wrap: anywhere;
+}

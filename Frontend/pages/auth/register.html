@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng ký - RoomFinder</title>
+  <link rel="stylesheet" href="../../styles.css" />
+  <link rel="stylesheet" href="../../css/auth/register.css" />
+</head>
+<body>
+  <div class="auth-box">
+    <h2>Đăng ký tài khoản</h2>
+    <form id="registerForm">
+      <label for="fullName">Họ và tên</label>
+      <input type="text" id="fullName" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" required />
+
+      <label for="password">Mật khẩu</label>
+      <input type="password" id="password" required />
+
+      <label for="role">Bạn là</label>
+      <select id="role">
+        <option value="Student">Sinh viên (tìm phòng)</option>
+        <option value="Landlord">Chủ trọ (đăng phòng)</option>
+      </select>
+
+      <button type="submit" id="btnRegister">Đăng ký</button>
+    </form>
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+    <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+  </div>
+
+  <script src="../../js/config.js"></script>
+  <script src="../../js/auth/session.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/auth/register.js"></script>
+</body>
+</html>

@@ -23,7 +23,8 @@ public class AuthController : ControllerBase
         _config = config;
     }
 
-    public record RegisterDto(string Email, string Password, string FullName, string Role);
+    // Vai trò không được nhận từ trình duyệt. Tài khoản admin được tạo bằng công cụ nội bộ.
+    public record RegisterDto(string Email, string Password, string FullName);
     public record LoginDto(string Email, string Password);
 
     [HttpPost("register")]
@@ -34,7 +35,7 @@ public class AuthController : ControllerBase
             UserName = dto.Email,
             Email = dto.Email,
             FullName = dto.FullName,
-            Role = string.IsNullOrEmpty(dto.Role) ? "Student" : dto.Role
+            Role = "Customer"
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
@@ -55,7 +56,7 @@ public class AuthController : ControllerBase
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Email, user.Email ?? ""),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role == "Admin" ? "Admin" : "Customer")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));

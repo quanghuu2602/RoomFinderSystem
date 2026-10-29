@@ -1,27 +1,82 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ | RoomFinder</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="css/index.css">
-    <script src="js/config.js" defer></script>
-    <script src="js/auth/session.js" defer></script>
-    <script src="js/ui.js" defer></script>
-    <script src="js/index.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tìm phòng trọ phù hợp với bạn. Khám phá khu vực, so sánh giá và xem phòng tự do cùng RoomFinder.">
+  <title>RoomFinder — Tìm phòng, tìm chốn an yên</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/rooms/room-list.css">
 </head>
-<body class="home-page">
-    <header class="container">
-        <nav aria-label="Điều hướng chính">
-            <a href="index.html" aria-current="page">Trang chủ</a>
-            <a href="pages/auth/login.html">Đăng nhập</a>
-            <a href="pages/auth/register.html">Đăng ký</a>
-        </nav>
-    </header>
-    <main class="container">
-        <h1>RoomFinder</h1>
-        <!-- TODO: Thêm nội dung trang chủ tại đây. -->
-    </main>
+<body>
+  <a class="skip-link" href="#main">Đến nội dung chính</a>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">⌂</span>RoomFinder<span class="brand-dot">.</span></a>
+      <nav class="nav-links" aria-label="Điều hướng chính">
+        <a href="index.html" aria-current="page">Trang chủ</a>
+        <a href="pages/rooms/room-list.html">Khám phá phòng</a>
+        <a class="nav-guide" href="#how-it-works">Cách hoạt động</a>
+      </nav>
+      <div id="userMenu" class="user-menu">
+        <a data-login href="pages/auth/login.html">Đăng nhập</a>
+        <a class="button" href="pages/auth/register.html">Đăng ký <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <section class="container hero">
+      <div class="hero-copy">
+        <span class="hero-tag"><span aria-hidden="true">✦</span> MỘT KHỞI ĐẦU MỚI, MỘT NƠI Ở MỚI</span>
+        <h1>Tìm một căn phòng.<br>Tìm <em>chốn an yên.</em></h1>
+        <p>Một nơi để trở về sau ngày dài. Khám phá phòng trọ phù hợp với cuộc sống và ngân sách của bạn.</p>
+        <a class="button hero-button" href="pages/rooms/room-list.html">Khám phá phòng ngay <span aria-hidden="true">↗</span></a>
+        <div class="hero-note"><span aria-hidden="true">✓</span> Cứ thoải mái xem. Chỉ đăng nhập khi bạn cần đặt phòng.</div>
+      </div>
+      <div class="hero-visual">
+        <img src="assets/images/home-room.svg" alt="Minh họa căn phòng ấm áp với cửa sổ lớn, ghế sofa và cây xanh" width="640" height="540" fetchpriority="high">
+        <div class="visual-label"><span class="visual-label-icon" aria-hidden="true">⌂</span><div><strong>Không gian nhỏ. Khởi đầu lớn.</strong><span>Nơi câu chuyện của bạn bắt đầu.</span></div></div>
+        <span class="image-caption">Một góc bình yên · Hình minh họa</span>
+      </div>
+    </section>
+    <section class="container search-section" aria-label="Tìm phòng nhanh">
+      <form id="homeSearch" class="home-search" action="pages/rooms/room-list.html">
+        <div class="search-intro"><strong>Phòng hợp ý,<br>tìm thật dễ.</strong><span>Bắt đầu từ điều bạn cần</span></div>
+        <div class="field"><label for="homeDistrict">KHU VỰC BẠN MUỐN Ở</label><select id="homeDistrict" name="district"><option value="">Tất cả khu vực</option></select></div>
+        <div class="field"><label for="homeBudget">NGÂN SÁCH MỖI THÁNG</label><select id="homeBudget" name="maxPrice"><option value="">Không giới hạn</option><option value="2000000">Đến 2 triệu đồng</option><option value="3000000">Đến 3 triệu đồng</option><option value="5000000">Đến 5 triệu đồng</option><option value="7000000">Đến 7 triệu đồng</option></select></div>
+        <button type="submit">Tìm phòng <span aria-hidden="true">→</span></button>
+      </form>
+      <p id="districtHint" class="search-hint">Gợi ý: chọn khu vực và mức giá để tìm phòng phù hợp hơn.</p>
+    </section>
+    <section class="container latest-section" aria-labelledby="latestTitle">
+      <div class="section-heading">
+        <div><p class="eyebrow">KHÔNG GIAN CHO CHƯƠNG MỚI</p><h2 id="latestTitle">Phòng mới, chờ bạn khám phá</h2><p>Thêm một lựa chọn cho nơi ở tiếp theo của bạn.</p></div>
+        <a class="text-link" href="pages/rooms/room-list.html">Xem tất cả phòng <span aria-hidden="true">↗</span></a>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <button id="retryRooms" class="btn-outline" type="button" hidden>Thử tải lại</button>
+      <div id="roomGrid" class="room-grid" aria-busy="true"></div>
+    </section>
+    <section class="how-section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow">ĐƠN GIẢN TỪ BƯỚC ĐẦU TIÊN</p><h2>Gần hơn với nơi bạn muốn sống</h2></div><p>Tự do khám phá, chủ động lựa chọn.</p></div>
+        <div class="step-grid">
+          <article><span class="step-number">01</span><h3>Chọn điều bạn cần</h3><p>Lọc theo khu vực, mức giá và tình trạng còn phòng để thu hẹp lựa chọn.</p></article>
+          <article><span class="step-number">02</span><h3>Khám phá không gian</h3><p>Xem ảnh, diện tích và địa chỉ phòng. Không cần tài khoản để bắt đầu tìm kiếm.</p></article>
+          <article><span class="step-number">03</span><h3>Sẵn sàng cho bước tiếp theo</h3><p>Đăng nhập khi muốn đặt phòng. Tính năng đặt phòng trực tuyến sẽ được mở sau.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="container"><div class="home-cta"><div><p class="eyebrow">CĂN PHÒNG TIẾP THEO CỦA BẠN</p><h2>Bắt đầu một hành trình mới.</h2><p>Một nơi ở phù hợp có thể thay đổi cả ngày của bạn.</p></div><a class="button" href="pages/rooms/room-list.html">Tìm nơi ở của tôi <span aria-hidden="true">↗</span></a></div></section>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">⌂</span>RoomFinder.</a><p>Tìm phòng dễ dàng. An tâm bắt đầu.</p><a class="text-link" href="pages/rooms/room-list.html">Khám phá phòng ↗</a></div></footer>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth/session.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/rooms/room-api.js"></script>
+  <script src="js/rooms/room-ui.js"></script>
+  <script src="js/index.js"></script>
 </body>
 </html>

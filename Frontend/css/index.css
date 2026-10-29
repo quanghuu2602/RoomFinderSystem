@@ -1,1 +1,37 @@
-/* CSS riêng của index.html. Viết giao diện trang chủ tại đây. */
+.hero { display: grid; grid-template-columns: 1.03fr 1fr; align-items: center; gap: 50px; padding-top: 56px; padding-bottom: 56px; }
+.hero-tag { display: inline-flex; align-items: center; gap: 9px; font-size: 10px; letter-spacing: 1.3px; color: var(--green); font-weight: 600; }
+.hero-tag > span { font-size: 19px; }
+.hero h1 { font-size: clamp(34px, 3.8vw, 49px); letter-spacing: -2px; line-height: 1.28; margin: 22px 0; font-weight: 700; }
+.hero h1 em { color: var(--green); font-style: normal; position: relative; }
+.hero h1 em::after { content: ''; position: absolute; left: 0; right: 0; bottom: -7px; height: 8px; border-radius: 50%; border-top: 3px solid #bdca8a; transform: rotate(-2deg); }
+.hero-copy > p { color: var(--muted); max-width: 410px; line-height: 1.9; margin-bottom: 26px; }
+.hero-button { padding: 14px 24px; }
+.hero-note { margin-top: 21px; font-size: 11px; color: var(--muted); }
+.hero-note span { color: var(--green); margin-right: 5px; }
+.hero-visual { position: relative; padding-bottom: 23px; }
+.hero-visual > img { width: 100%; height: auto; display: block; border-radius: 100px 18px 18px 18px; }
+.visual-label { position: absolute; bottom: 46px; left: -24px; display: flex; align-items: center; gap: 12px; background: #fffffff5; padding: 14px 18px; border: 1px solid #fff; border-radius: 13px; box-shadow: 0 12px 32px #1d3d3215; }
+.visual-label-icon { background: #e8efe3; color: var(--green); font-size: 28px; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; }
+.visual-label strong { display: block; font-size: 12px; }
+.visual-label div > span { font-size: 10px; color: var(--muted); }
+.image-caption { position: absolute; right: 0; bottom: 0; font-size: 10px; color: var(--muted); }
+.home-search { display: grid; grid-template-columns: 1fr 1.25fr 1.25fr auto; align-items: center; gap: 24px; background: #fff; border: 1px solid var(--line); padding: 26px; border-radius: 16px; box-shadow: 0 12px 28px #183b3205; }
+.search-intro { border-right: 1px solid var(--line); }
+.search-intro strong { font-size: 18px; line-height: 1.45; display: block; }
+.search-intro span { display: block; font-size: 10px; color: var(--muted); margin-top: 6px; }
+.home-search .field label { font-size: 10px; letter-spacing: .6px; }
+.home-search > button { align-self: end; }
+.search-hint { margin: 11px 0 0 26px; color: var(--muted); font-size: 11px; }
+.latest-section { padding-top: 64px; padding-bottom: 64px; }
+.how-section { padding: 48px 0; background: #edf1e7; border-top: 1px solid #e1e7dc; border-bottom: 1px solid #e1e7dc; }
+.step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 32px; }
+.step-number { display: inline-block; padding-bottom: 10px; color: #62856a; font-size: 24px; font-weight: 500; }
+.step-grid h3 { font-size: 16px; margin: 4px 0 12px; }
+.step-grid p { color: var(--muted); font-size: 12px; margin: 0; }
+.home-cta { margin-top: 56px; background: var(--green-dark); color: #fff; padding: 38px 42px; border-radius: 17px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.home-cta .eyebrow { color: #c2d49e; }
+.home-cta h2 { margin-bottom: 10px; }
+.home-cta p:last-child { color: #cbddd1; margin: 0; font-size: 12px; }
+.home-cta .button { background: #e4edca; color: var(--green-dark); white-space: nowrap; }
+@media (max-width: 900px) { .hero { gap: 30px; } .hero h1 { font-size: 37px; } .home-search { grid-template-columns: 1fr 1fr auto; gap: 16px; } .search-intro { display: none; } .visual-label { left: -10px; padding: 10px; } }
+@media (max-width: 640px) { .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 30px; padding-bottom: 28px; } .hero h1 { font-size: 37px; letter-spacing: -1.6px; } .hero-copy > p { font-size: 13px; } .hero-visual { max-width: 460px; width: 100%; margin: auto; } .hero-visual > img { max-height: 320px; object-fit: cover; } .visual-label { left: 10px; } .home-search { grid-template-columns: 1fr; padding: 20px; gap: 16px; } .home-search button { width: 100%; } .search-hint { margin-left: 0; } .latest-section { padding-top: 40px; padding-bottom: 40px; } .step-grid { grid-template-columns: 1fr; gap: 26px; } .step-grid article { padding-left: 50px; position: relative; } .step-number { position: absolute; left: 0; top: 0; } .home-cta { flex-direction: column; align-items: start; padding: 28px; margin-top: 36px; } }

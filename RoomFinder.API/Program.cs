@@ -5,7 +5,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using RoomFinder.Domain.Entities;
 using System.Text;
-var builder = WebApplication.CreateBuilder(args);
+using System.Security.Claims;
+using RoomFinder.API.Services;
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args, WebRootPath = "wwwroot" });
+var webRoot = builder.Environment.WebRootPath;
+Directory.CreateDirectory(webRoot);
+builder.Environment.WebRootFileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(webRoot);
+builder.Services.AddScoped<RoomImageStorage>();
 
 // Add services to the container.
 
@@ -44,6 +50,24 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var users = context.HttpContext.RequestServices.GetRequiredService<UserManager<AppUser>>();
+            var userId = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = userId == null ? null : await users.FindByIdAsync(userId);
+            if (user == null || await users.IsLockedOutAsync(user))
+            {
+                context.Fail("Tài khoản không còn khả dụng.");
+                return;
+            }
+            // Quyền hiện tại trong database có hiệu lực ngay, kể cả với JWT cũ.
+            var identity = (ClaimsIdentity)context.Principal!.Identity!;
+            foreach (var claim in identity.FindAll(identity.RoleClaimType).ToList()) identity.RemoveClaim(claim);
+            identity.AddClaim(new Claim(identity.RoleClaimType, user.Role == "Admin" ? "Admin" : "Customer"));
+        }
+    };
 });
 
 builder.Services.AddCors(options =>
@@ -55,6 +79,11 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+if (args.Contains("--create-admin"))
+{
+    Environment.ExitCode = await AdminAccountCommand.RunAsync(app.Services);
+    return;
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

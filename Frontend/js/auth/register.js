@@ -1,6 +1,9 @@
 // JavaScript riêng của pages/auth/register.html.
 const registerForm = document.getElementById("registerForm");
 const btnRegister = document.getElementById("btnRegister");
+const loginUrl = new URL('login.html', window.location.href);
+loginUrl.searchParams.set('next', getReturnUrl());
+document.getElementById('loginLink').href = loginUrl.href;
 
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -9,7 +12,6 @@ registerForm.addEventListener("submit", async (e) => {
     fullName: document.getElementById("fullName").value.trim(),
     email: document.getElementById("email").value.trim(),
     password: document.getElementById("password").value,
-    role: document.getElementById("role").value,
   };
 
   btnRegister.disabled = true;
@@ -37,10 +39,10 @@ registerForm.addEventListener("submit", async (e) => {
       registered = true;
       btnRegister.textContent = "Đã đăng ký";
       showMessage("Đăng ký thành công! Đang chuyển sang trang đăng nhập...", "success");
-      setTimeout(() => (window.location.href = "login.html"), 1500);
+      setTimeout(() => (window.location.href = loginUrl.href), 1500);
     }
   } catch (err) {
-    showMessage("Không kết nối được tới server. Kiểm tra API đã chạy (F5) chưa.", "error");
+    showMessage("Không thể kết nối. Vui lòng kiểm tra mạng và thử lại sau.", "error");
   } finally {
     if (!registered) {
       btnRegister.disabled = false;

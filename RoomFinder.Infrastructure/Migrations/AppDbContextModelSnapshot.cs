@@ -243,6 +243,10 @@ namespace RoomFinder.Infrastructure.Migrations
                     b.Property<double>("Area")
                         .HasColumnType("float");
 
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 

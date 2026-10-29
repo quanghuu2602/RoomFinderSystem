@@ -1,90 +1,131 @@
-# Frontend RoomFinder
+# RoomFinder — Website cho thuê của công ty
 
-Frontend HTML, CSS và JavaScript thuần. Đã có biểu mẫu đăng ký, đăng nhập gọi API và trang phòng tạm để kiểm tra email, role và đăng xuất. Danh sách phòng sẽ được bổ sung ở Ngày 8.
+Frontend HTML, CSS và JavaScript thuần, không cần npm hoặc build.
 
-## Cấu trúc
+## Mô hình công ty và trang quản trị
 
-```text
-Frontend/
-├── index.html
-├── styles.css                 # CSS chung có sẵn
-├── css/
-│   ├── index.css              # CSS riêng trang chủ
-│   ├── auth/
-│   │   ├── login.css          # CSS riêng trang đăng nhập
-│   │   └── register.css       # CSS riêng trang đăng ký
-│   └── rooms/
-│       └── room-list.css      # CSS riêng trang phòng
-├── js/
-│   ├── config.js              # Địa chỉ API dùng chung
-│   ├── ui.js                  # Hàm showMessage dùng chung
-│   ├── index.js
-│   ├── auth/
-│   │   ├── session.js         # Đọc JWT, lưu phiên và đăng xuất
-│   │   ├── login.js
-│   │   └── register.js
-│   └── rooms/
-│       └── room-list.js
-├── pages/
-│   ├── auth/
-│   │   ├── login.html
-│   │   └── register.html
-│   └── rooms/
-│       └── room-list.html
-└── assets/
-    └── images/               # Lưu ảnh frontend
+- **Admin** là nhân viên quản trị của công ty, có quyền thêm/sửa/xóa tất cả phòng, cập nhật tình trạng và tải/xóa ảnh.
+- **Customer** là khách hàng. Đăng ký công khai luôn tạo Customer; gửi thêm trường `role` cũng không thể tự cấp quyền Admin.
+- Khách chưa đăng nhập vẫn xem phòng và ảnh công khai. Không còn đăng ký tài khoản chủ trọ.
+- Tài khoản Student/Landlord cũ đăng nhập sẽ nhận quyền Customer; không được quản lý phòng. JWT cũng được đối chiếu vai trò hiện tại trong database.
+- Giữ cột `LandlordId` cũ để tương thích database; đối với phòng mới cột này lưu ID admin tạo phòng. Thay đổi này không cần migration mới ngoài migration District của phần 8A.
+
+Trang quản trị: `http://127.0.0.1:5500/pages/admin/dashboard.html`.
+Nếu Live Server mở từ thư mục gốc dự án, thêm `/Frontend` trước `/pages`.
+
+Đăng nhập bằng tài khoản Admin rồi chọn **Quản trị** trên thanh điều hướng. Khi mở trang đăng nhập trực tiếp, admin đăng nhập thành công sẽ vào trang quản trị; nếu đang xem một phòng thì vẫn quay lại phòng đó.
+
+### Tạo tài khoản admin nội bộ
+
+Từ thư mục `D:\RoomFinderSystem`, chạy trong terminal tương tác:
+
+```powershell
+dotnet run --project RoomFinder.API -- --create-admin
 ```
 
-## Chạy bằng Live Server
+Nhập email mới, họ tên, mật khẩu và xác nhận mật khẩu. Mật khẩu không hiện trên màn hình. Công cụ tạo Admin qua ASP.NET Identity và thoát, không mở web server. Database phải sẵn sàng và đã áp dụng migration. Không có tài khoản/mật khẩu admin mặc định; công cụ không tự nâng quyền tài khoản đã tồn tại. Chưa chạy lệnh này trên database thật trong quá trình triển khai.
 
-1. Trong VS Code, chọn **File → Open Folder → D:\RoomFinderSystem\Frontend**.
-2. Nếu chưa có Live Server, mở Extensions (`Ctrl+Shift+X`) và cài extension **Live Server** của **Ritwick Dey**.
-3. Chuột phải `index.html` → **Open with Live Server**.
-4. Frontend cần chạy tại `http://127.0.0.1:5500` hoặc `http://localhost:5500` để khớp cấu hình CORS của API. Nếu Live Server dùng cổng khác, mở Settings, tìm **Live Server › Settings: Port**, đặt `5500` và khởi động lại Live Server. Nếu cổng đang bận, dừng phiên Live Server cũ trước.
+### Đăng phòng và ảnh lên website
 
-Khi bắt đầu viết chức năng gọi API, chạy backend trong một terminal khác:
+1. Vào trang quản trị, chọn **Thêm phòng mới**.
+2. Điền tên phòng/căn hộ, địa chỉ, khu vực, diện tích, giá thuê và tình trạng.
+3. Chọn ảnh trực tiếp từ máy; có xem trước và bỏ ảnh trước khi tải. Nhận JPG/JPEG, PNG, WebP, tối đa 5 MB/ảnh và 10 ảnh mỗi lần tải. Backend kiểm tra cả dấu hiệu định dạng file.
+4. Bấm **Lưu phòng**. Phòng và ảnh được lưu vào API, hiển thị khi tải trang công khai. Trang chủ hiển thị ba phòng mới nhất; ảnh đầu tiên của mỗi phòng là ảnh đại diện. Hình minh họa lớn ở đầu trang chủ vẫn là tài nguyên trang trí riêng.
+5. Chọn **Sửa & ảnh** để sửa thông tin, thêm hoặc xóa ảnh. Xóa ảnh đại diện để ảnh tiếp theo thay thế. Khách xem được các ảnh trong hộp thoại thông tin phòng.
+6. Có nút đổi tình trạng còn trống/đã thuê, tìm phòng trong danh sách và xóa phòng kèm ảnh. Xóa cần xác nhận trên giao diện.
+
+Nếu thông tin đã lưu nhưng tải ảnh lỗi, trang quản trị giữ ID phòng và ảnh đang chọn để thử lại, không tạo lại phòng. Ảnh lưu ở `RoomFinder.API/wwwroot/uploads`; cần lưu giữ thư mục này khi sao lưu hoặc triển khai ứng dụng.
+
+API ghi phòng và ảnh yêu cầu quyền Admin ở backend. Trang quản trị xác minh tài khoản qua `/api/auth/me`, không chỉ kiểm tra `localStorage`.
+
+## Mở giao diện
+
+1. Mở thư mục `D:\RoomFinderSystem\Frontend` trong VS Code.
+2. Chuột phải `index.html` → **Open with Live Server**.
+3. Dùng `http://127.0.0.1:5500` hoặc `http://localhost:5500` để khớp CORS của backend.
+4. Chạy API bằng F5 trong Visual Studio với profile HTTPS, hoặc:
 
 ```powershell
 dotnet run --project D:\RoomFinderSystem\RoomFinder.API --launch-profile https
 ```
 
-Giữ backend chạy. Swagger: `https://localhost:7055/swagger`. Địa chỉ API đã đặt trong `js/config.js`.
+API được cấu hình trong `js/config.js`: `https://localhost:7055`.
+Nếu gặp lỗi kết nối, mở `https://localhost:7055/swagger`, kiểm tra API/database và chứng chỉ HTTPS. Có thể dùng `dotnet dev-certs https --trust` nếu trình duyệt chưa tin chứng chỉ phát triển.
+Backend cần có migration District của phần 8A đã áp dụng vào database.
 
-## Viết từng trang riêng
+Trang chủ vẫn mở được khi API chưa chạy; các phần dữ liệu sẽ báo lỗi kèm nút thử lại. Không chèn phòng giả vào giao diện.
 
-- Viết nội dung và biểu mẫu trong file `.html` của trang.
-- Viết giao diện trong file `.css` tương ứng; các file này đã được liên kết trong HTML.
-- Viết xử lý trong file `.js` tương ứng; `config.js` được nạp trước để dùng `API_BASE_URL`.
-- `styles.css` giữ CSS chung cho các trang. CSS riêng được nạp sau để tùy chỉnh từng trang.
-- Khi thêm trang mới, tạo ba file HTML/CSS/JS tương ứng và liên kết đúng đường dẫn tương đối. Không cần npm hoặc công cụ build cho khung hiện tại.
+## Chức năng đã có
 
-## Hàm dùng chung cho đăng nhập
+- Trang chủ công khai: giới thiệu, tìm nhanh theo khu vực/ngân sách, ba phòng mới nhất, hướng dẫn sử dụng.
+- Danh sách phòng công khai: giá tối thiểu/tối đa, khu vực và chỉ phòng còn trống.
+- Bộ lọc được giữ trong URL, dùng được khi tải lại trang hoặc chia sẻ đường dẫn.
+- Kiểm tra giá tối thiểu không vượt giá tối đa; xóa lọc tải lại toàn bộ.
+- Thẻ phòng: ảnh, giá Việt Nam, địa chỉ, diện tích, khu vực và tình trạng còn/hết phòng.
+- Xử lý đang tải, không có kết quả, lỗi mạng, tải lại và ảnh thiếu/hỏng.
+- Xem thông tin phòng trong hộp thoại mà không cần đăng nhập.
+- Header thay đổi theo phiên đăng nhập; đăng xuất về trang chủ.
+- Trang đăng nhập/đăng ký đồng bộ giao diện, hỗ trợ quay lại trang/phòng vừa xem.
+- Escape dữ liệu trước khi đưa vào HTML, chỉ nhận URL ảnh HTTP(S); đường dẫn quay lại được giới hạn trong các trang công khai của ứng dụng.
+- Giao diện thích ứng máy tính/điện thoại, nhãn biểu mẫu, thông báo trạng thái và điều hướng bàn phím.
 
-Các trang đăng ký và đăng nhập nạp script ở cuối `body` theo thứ tự: `config.js` → `auth/session.js` → `ui.js` → JavaScript riêng của trang. Trang phòng nạp `config.js`, `auth/session.js` rồi `rooms/room-list.js`. Nếu đưa script lên `head`, thêm `defer` và giữ nguyên thứ tự này.
+## Luồng đăng nhập và đặt phòng
 
-- `parseJwt(token)`: đọc payload của JWT, hỗ trợ nội dung Unicode; ném lỗi nếu token sai định dạng.
-- `saveSession(token)`: lưu token, email và role vào `localStorage`; từ chối token hết hạn hoặc thiếu claim `exp`. Token do backend hiện tại tạo đã có `exp`.
-- `getToken()`, `getEmail()`, `getRole()`: lấy thông tin đã lưu.
-- `isLoggedIn()`: trả về `false` nếu token thiếu, lỗi hoặc hết hạn. Đây chỉ là kiểm tra trạng thái giao diện; API vẫn phải xác thực chữ ký và quyền truy cập.
-- `logout()`: xóa thông tin phiên và chuyển đến trang đăng nhập.
-- `showMessage(text, type)`: hiện thông báo vào phần tử `id="message"`; `type` là `"error"` hoặc `"success"`. Hai trang đăng nhập và đăng ký đã có phần tử này. Nếu trang không có, hàm bỏ qua.
+1. Khách vào trang chủ, tìm và xem chi tiết phòng tự do.
+2. Bấm **Đặt phòng** trên phòng còn trống: nếu chưa đăng nhập hoặc phiên hết hạn, chuyển sang đăng nhập.
+3. Nếu cần đăng ký, thông tin trang/phòng cần quay lại vẫn được giữ qua bước đăng ký.
+4. Sau đăng nhập, quay lại đúng trang và mở lại thông tin phòng.
+5. Backend hiện chỉ có Auth, Rooms và RoomImages, **chưa có API đặt phòng**. Vì vậy giao diện thông báo đặt phòng trực tuyến chưa mở; không tạo đơn, không trừ tiền và không báo đặt thành công.
+6. Phòng đã cho thuê có nút đặt phòng bị vô hiệu hóa.
 
-Ví dụ dùng trong `js/auth/login.js`, sau khi API đăng nhập trả về thành công với đối tượng `data`:
+`isLoggedIn()` chỉ kiểm tra phiên để điều hướng giao diện. Khi xây API đặt phòng, backend cần xác thực JWT, quyền người dùng và tình trạng phòng.
 
-```javascript
-try {
-    saveSession(data.token);
-    showMessage("Đăng nhập thành công!", "success");
-} catch {
-    showMessage("Không thể lưu phiên đăng nhập. Vui lòng thử lại.", "error");
-}
+## Các file chính
+
+| File | Vai trò |
+| --- | --- |
+| `index.html`, `css/index.css`, `js/index.js` | Trang chủ công khai |
+| `styles.css` | Giao diện dùng chung và trang xác thực |
+| `js/utils.js` | `escapeHtml`, `formatPrice`, kiểm tra URL ảnh |
+| `js/navigation.js` | Hiển thị menu khách/tài khoản |
+| `js/rooms/room-api.js` | Gọi API phòng và khu vực |
+| `js/rooms/room-ui.js` | Thẻ phòng, hộp thoại, yêu cầu đăng nhập khi đặt phòng |
+| `pages/rooms/room-list.html` | Trang danh sách và biểu mẫu lọc |
+| `css/rooms/room-list.css` | Giao diện danh sách, thẻ phòng, hộp thoại |
+| `js/rooms/room-list.js` | Lọc, URL, trạng thái tải, chống kết quả cũ ghi đè kết quả mới |
+| `js/auth/session.js` | JWT, phiên đăng nhập, đường dẫn quay lại an toàn |
+| `pages/auth/`, `js/auth/` | Đăng ký và đăng nhập |
+| `assets/images/home-room.svg` | Hình minh họa trang chủ lưu trong dự án |
+| `tests/frontend.test.cjs` | Kiểm tra tương tác bằng Chrome headless |
+
+Giữ cấu trúc sẵn có: `styles.css` và `css/rooms/room-list.css` tương ứng CSS chung và CSS module rooms trong tài liệu 8B.
+
+## Kiểm tra
+
+Kiểm tra cú pháp JavaScript:
+
+```powershell
+Get-ChildItem Frontend\js -Filter *.js -Recurse | ForEach-Object { node --check $_.FullName }
 ```
 
-## Chạy thử luồng đăng nhập
+Chạy kiểm tra trình duyệt từ thư mục gốc `D:\RoomFinderSystem`:
 
-1. Chạy API với profile `https`, mở `https://localhost:7055/swagger` và bảo đảm trình duyệt tin cậy chứng chỉ localhost. Nếu cần, chạy `dotnet dev-certs https --trust` rồi mở lại trình duyệt.
-2. Mở `Frontend` làm gốc Live Server, vào `http://127.0.0.1:5500/pages/auth/register.html` để tạo tài khoản thử. Giữ cùng một hostname (`127.0.0.1` hoặc `localhost`) trong suốt quá trình vì mỗi origin có `localStorage` riêng.
-3. Đăng ký thành công sẽ chuyển sang trang đăng nhập. Đăng nhập thành công sẽ chuyển tới `pages/rooms/room-list.html`, hiển thị email và role.
-4. Bấm **Đăng xuất** để xóa phiên và về trang đăng nhập. Mở lại trang phòng khi chưa đăng nhập phải được chuyển về trang đăng nhập.
+```powershell
+node Frontend/tests/frontend.test.cjs
+```
 
-Hàm `logout()` hiện tính đường dẫn từ vị trí file `session.js`, nên vẫn đúng khi Live Server mở cả thư mục `RoomFinderSystem`. Khi đó URL frontend có thêm tiền tố `/Frontend/`.
+Cần Node.js 22+ và Google Chrome. Mặc định dùng `C:\Program Files\Google\Chrome\Application\chrome.exe`; có thể đặt biến môi trường `CHROME_PATH` nếu Chrome nằm ở vị trí khác. Nếu terminal đang ở thư mục Frontend, dùng `node tests/frontend.test.cjs`.
+
+Bài kiểm tra mở máy chủ tạm ở cổng ngẫu nhiên và Chrome headless với profile tạm, tự đóng khi kết thúc. Kiểm tra khách truy cập, tìm nhanh, lọc/xóa lọc, giá không hợp lệ, dữ liệu rỗng, lỗi/tải lại, phản hồi lệch thứ tự, XSS/URL ảnh, xem phòng, yêu cầu đăng nhập, đăng ký/đăng nhập rồi quay lại, đăng xuất, chặn chuyển hướng ngoài ứng dụng và bố cục mobile.
+
+Bài kiểm tra cũng bao gồm phân quyền trang admin, giả mạo role trong localStorage, thêm/sửa/xóa phòng, đổi tình trạng, tải/xóa ảnh và thử lại khi tải ảnh lỗi mà không tạo phòng trùng.
+
+Kiểm tra backend với bộ xác thực và người dùng thử nghiệm, không kết nối database thật:
+
+```powershell
+dotnet run --project tests/RoomFinder.Checks
+```
+
+Bộ kiểm tra chạy các controller và middleware phân quyền qua HTTP: khách/Customer/Student/Landlord bị chặn ghi dữ liệu; đăng ký không thể cấp Admin; đăng nhập chuẩn hóa vai trò cũ; dữ liệu phòng không hợp lệ bị từ chối. Đồng thời kiểm tra file ảnh, lưu/xóa file và giới hạn đường dẫn trong thư mục uploads. Không thay thế kiểm tra ghi dữ liệu thật với SQL Server.
+
+Các bài kiểm tra dùng API mô phỏng, không tạo tài khoản hoặc sửa database thật. Cần kiểm tra thêm với API/database thực đang chạy để xác nhận tích hợp hoàn chỉnh.

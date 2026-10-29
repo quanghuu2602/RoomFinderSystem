@@ -4,6 +4,29 @@ const EMAIL_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email
 
 // Tính từ file này để đăng xuất vẫn đúng khi mở Live Server từ thư mục dự án.
 const LOGIN_PAGE_URL = new URL("../../pages/auth/login.html", document.currentScript.src).href;
+const APP_ROOT_URL = new URL("../../", document.currentScript.src);
+
+// Chỉ quay lại các trang đã biết trong ứng dụng; trang admin kiểm tra quyền qua API.
+function getReturnUrl() {
+    const fallback = new URL(isLoggedIn() && getRole() === 'Admin' ? 'pages/admin/dashboard.html' : 'pages/rooms/room-list.html', APP_ROOT_URL).href;
+    const next = new URLSearchParams(window.location.search).get('next');
+    if (!next) return fallback;
+    try {
+        const url = new URL(next, APP_ROOT_URL);
+        const allowed = ['index.html', 'pages/rooms/room-list.html', 'pages/admin/dashboard.html']
+            .map(path => new URL(path, APP_ROOT_URL).pathname);
+        return url.origin === APP_ROOT_URL.origin && !url.username && !url.password && allowed.includes(url.pathname)
+            ? url.href : fallback;
+    } catch { return fallback; }
+}
+
+function requireLogin(returnUrl = window.location.href) {
+    if (isLoggedIn()) return true;
+    const url = new URL(LOGIN_PAGE_URL);
+    url.searchParams.set('next', returnUrl);
+    window.location.href = url.href;
+    return false;
+}
 
 // Chỉ đọc payload; chữ ký và quyền truy cập vẫn do API kiểm tra.
 function parseJwt(token) {
@@ -69,5 +92,5 @@ function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("role");
-    window.location.href = LOGIN_PAGE_URL;
+    window.location.href = new URL('index.html', APP_ROOT_URL).href;
 }

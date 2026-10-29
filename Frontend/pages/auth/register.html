@@ -7,30 +7,29 @@
   <link rel="stylesheet" href="../../styles.css" />
   <link rel="stylesheet" href="../../css/auth/register.css" />
 </head>
-<body>
-  <div class="auth-box">
-    <h2>Đăng ký tài khoản</h2>
+<body class="auth-page">
+  <header class="container auth-header"><a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true">⌂</span>RoomFinder.</a><a class="text-link" href="../rooms/room-list.html">Xem phòng tự do ↗</a></header>
+  <main class="auth-box">
+    <p class="eyebrow">KHỞI ĐẦU MỘT HÀNH TRÌNH</p>
+    <h1>Tạo tài khoản</h1>
+    <p class="muted">Một bước gần hơn với nơi ở phù hợp.</p>
     <form id="registerForm">
       <label for="fullName">Họ và tên</label>
-      <input type="text" id="fullName" required />
+      <input type="text" id="fullName" autocomplete="name" placeholder="Họ và tên của bạn" required />
 
       <label for="email">Email</label>
-      <input type="email" id="email" required />
+      <input type="email" id="email" autocomplete="email" placeholder="ban@example.com" required />
 
       <label for="password">Mật khẩu</label>
-      <input type="password" id="password" required />
+      <input type="password" id="password" autocomplete="new-password" minlength="6" placeholder="Tạo mật khẩu của bạn" required />
 
-      <label for="role">Bạn là</label>
-      <select id="role">
-        <option value="Student">Sinh viên (tìm phòng)</option>
-        <option value="Landlord">Chủ trọ (đăng phòng)</option>
-      </select>
+      <p class="muted">Tài khoản dành cho khách hàng tìm thuê phòng của công ty.</p>
 
       <button type="submit" id="btnRegister">Đăng ký</button>
     </form>
     <div id="message" class="message" role="status" aria-live="polite"></div>
-    <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
-  </div>
+    <p>Đã có tài khoản? <a id="loginLink" href="login.html">Đăng nhập</a></p>
+  </main>
 
   <script src="../../js/config.js"></script>
   <script src="../../js/auth/session.js"></script>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản trị phòng — RoomFinder</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../css/admin/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Đến nội dung chính</a>
+  <header class="site-header"><div class="container nav-inner">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true">⌂</span>RoomFinder.</a>
+    <span class="admin-label">KHÔNG GIAN QUẢN TRỊ</span>
+    <div class="user-menu"><a href="../../index.html" class="text-link">Xem website ↗</a><button id="adminLogout" class="btn-outline" type="button">Đăng xuất</button></div>
+  </div></header>
+  <main id="main" class="container admin-main">
+    <div id="accessStatus" class="status info" role="status">Đang kiểm tra quyền quản trị…</div>
+    <button id="retryAccess" type="button" hidden>Thử lại</button>
+    <div id="adminContent" hidden>
+      <div class="section-heading"><div><p class="eyebrow">QUẢN LÝ KHÔNG GIAN CỦA CÔNG TY</p><h1>Phòng & căn hộ</h1><p>Thông tin và ảnh bạn đăng sẽ xuất hiện trên website cho thuê.</p></div><button id="newRoom" type="button">+ Thêm phòng mới</button></div>
+      <div class="stats-grid"><div><span>Tổng số phòng</span><strong id="totalRooms">—</strong></div><div><span>Đang còn trống</span><strong id="availableRooms">—</strong></div><div><span>Đã cho thuê</span><strong id="occupiedRooms">—</strong></div></div>
+      <div class="admin-toolbar"><div class="field"><label for="adminSearch">Tìm trong danh sách</label><input id="adminSearch" type="search" placeholder="Tên phòng, địa chỉ hoặc khu vực"></div><button id="refreshRooms" class="btn-outline" type="button">Tải lại danh sách</button></div>
+      <div id="adminStatus" class="status" role="status" aria-live="polite"></div>
+      <div id="adminRooms" class="admin-rooms" aria-busy="true"></div>
+    </div>
+  </main>
+  <dialog id="editorDialog" aria-labelledby="editorTitle">
+    <div class="editor-header"><div><p class="eyebrow">THÔNG TIN ĐĂNG TRÊN WEBSITE</p><h2 id="editorTitle">Thêm phòng mới</h2></div><button id="closeEditor" class="btn-outline" type="button" aria-label="Đóng trình chỉnh sửa">×</button></div>
+    <form id="roomForm">
+      <fieldset id="editorFields">
+        <div class="editor-grid">
+          <div class="field wide"><label for="roomTitle">Tên phòng / căn hộ</label><input id="roomTitle" maxlength="200" required placeholder="Ví dụ: Studio ban công, đầy đủ nội thất"></div>
+          <div class="field wide"><label for="roomAddress">Địa chỉ</label><input id="roomAddress" maxlength="500" required placeholder="Số nhà, đường, phường, thành phố"></div>
+          <div class="field"><label for="roomDistrict">Khu vực / quận</label><input id="roomDistrict" maxlength="100" required placeholder="Ví dụ: Bình Thạnh"></div>
+          <div class="field"><label for="roomArea">Diện tích (m²)</label><input id="roomArea" type="number" min="0.1" max="1000000" step="any" required placeholder="28"></div>
+          <div class="field"><label for="roomPrice">Giá thuê (đ/tháng)</label><input id="roomPrice" type="number" min="0" max="1000000000000" step="1" required placeholder="3200000"></div>
+          <div class="field"><label for="roomAvailable">Tình trạng</label><select id="roomAvailable"><option value="true">Còn trống</option><option value="false">Đã cho thuê</option></select></div>
+        </div>
+        <section class="images-section" aria-labelledby="imagesTitle">
+          <h3 id="imagesTitle">Ảnh phòng</h3>
+          <p class="muted">Ảnh đầu tiên là ảnh đại diện trên trang chủ và danh sách phòng. Xóa ảnh đầu tiên để ảnh kế tiếp trở thành ảnh đại diện.</p>
+          <div id="savedImages" class="image-grid"></div>
+          <div id="imageStatus" class="status" role="status"></div>
+          <label class="upload-zone" for="roomImages"><strong>+ Chọn ảnh từ máy tính</strong><span>JPG, PNG, WebP · tối đa 5 MB/ảnh · 10 ảnh/lần</span><input id="roomImages" type="file" accept=".jpg,.jpeg,.png,.webp" multiple></label>
+          <div id="pendingImages" class="image-grid"></div>
+        </section>
+      </fieldset>
+      <div id="editorStatus" class="status" role="status" aria-live="polite"></div>
+      <div class="editor-actions"><span>Thông tin được cập nhật công khai sau khi lưu.</span><button type="submit" id="saveRoom">Lưu phòng</button></div>
+    </form>
+  </dialog>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/auth/session.js"></script>
+  <script src="../../js/rooms/room-api.js"></script>
+  <script src="../../js/admin/admin-api.js"></script>
+  <script src="../../js/admin/dashboard.js"></script>
+</body>
+</html>

@@ -4,7 +4,15 @@ const btnLogin = document.getElementById("btnLogin");
 
 // Đã đăng nhập rồi thì không cần vào trang này nữa
 if (isLoggedIn()) {
-  window.location.href = "../rooms/room-list.html";
+  window.location.replace(getReturnUrl());
+}
+
+const registerLink = document.getElementById('registerLink');
+const registerUrl = new URL('register.html', window.location.href);
+registerUrl.searchParams.set('next', getReturnUrl());
+registerLink.href = registerUrl.href;
+if (new URLSearchParams(window.location.search).has('next')) {
+  document.getElementById('loginHint').textContent = 'Đăng nhập để tiếp tục. Bạn sẽ quay lại trang vừa xem.';
 }
 
 loginForm.addEventListener("submit", async (e) => {
@@ -36,10 +44,10 @@ loginForm.addEventListener("submit", async (e) => {
         showMessage("Không thể lưu phiên đăng nhập. Token không hợp lệ hoặc bộ nhớ trình duyệt không khả dụng.", "error");
         return;
       }
-      window.location.href = "../rooms/room-list.html";
+      window.location.href = getReturnUrl();
     }
   } catch (err) {
-    showMessage("Không kết nối được tới server. Kiểm tra API đã chạy (F5) chưa.", "error");
+    showMessage("Không thể kết nối. Vui lòng kiểm tra mạng và thử lại sau.", "error");
   } finally {
     btnLogin.disabled = false;
     btnLogin.textContent = "Đăng nhập";
